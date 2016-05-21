@@ -3,10 +3,14 @@ node_js:
     - "5.8"
 before_script:
     - npm install
-    - tsc config-serializer
+    - tsc
 script:
     - tslint -c tslint.json config-serializer/**/*.ts
     - cd config-serializer && node test-serializer.js
+
+notifications:
+    on_success: never
+    on_failure: never
 
 # script: node_modules/karma/bin/karma start my.conf.js --single-run
 # before_install:
