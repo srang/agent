@@ -43,20 +43,25 @@ gulp.task('webpack', function () {
     .pipe(gulp.dest('build/'));
 });
 
-gulp.task('test', function() {
+gulp.task('compile', function() {
   gulp.src('./config-serializer/**/*.ts')
     .pipe(tslint())
     .pipe(tslint.report('verbose'));
 
   var compiled = serializer.src()
-    .pipe(ts(serializer))
-    .js.pipe(gulp.dest('./config-serializer'));
+    .pipe(ts(serializer));
+  return compiled.js.pipe(gulp.dest('./config-serializer'));
 
+});
+
+gulp.task('assert', ['compile'], function() {
   var test = require('./config-serializer/serializer');
   test.serializeJSON('./config-serializer/uhk-config.json', './config-serializer/uhk-test.bin');
   test.deserializeBin('./config-serializer/uhk-config.bin', './config-serializer/uhk-test.json');
   test.compareConfigs('./config-serializer/uhk-config.bin','./config-serializer/uhk-test.json');
   test.compareConfigs('./config-serializer/uhk-test.bin','./config-serializer/uhk-config.json');
 });
+
+gulp.task('test', ['compile','assert']);
 
 gulp.task('default', ['sass', 'webpack']);
