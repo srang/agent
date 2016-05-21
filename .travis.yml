@@ -3,10 +3,11 @@ node_js:
     - "5.8"
 before_script:
     - npm install
-    - tsc
 script:
-    - tslint -c tslint.json config-serializer/**/*.ts
-    - cd config-serializer && node test-serializer.js
+    - cd config-serializer
+    - tsc
+    - tslint -c ../tslint.json **/*.ts
+    - node test-serializer.js
 
 notifications:
     on_success: never
