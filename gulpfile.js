@@ -57,9 +57,9 @@ gulp.task('compile', function() {
 gulp.task('assert', ['compile'], function() {
   var test = require('./config-serializer/serializer');
   test.serializeJSON('./config-serializer/uhk-config.json', './config-serializer/uhk-test.bin');
-  test.deserializeBin('./config-serializer/uhk-config.bin', './config-serializer/uhk-test.json');
-  test.compareConfigs('./config-serializer/uhk-config.bin','./config-serializer/uhk-test.json');
+  //test.deserializeBin('./config-serializer/uhk-config.bin', './config-serializer/uhk-test.json');
   test.compareConfigs('./config-serializer/uhk-test.bin','./config-serializer/uhk-config.json');
+  //test.compareConfigs('./config-serializer/uhk-config.bin','./config-serializer/uhk-test.json');
 });
 
 gulp.task('test', ['compile','assert']);
