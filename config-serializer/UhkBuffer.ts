@@ -12,11 +12,14 @@ export class UhkBuffer {
     private buffer: Buffer;
     private bytesToBacktrack: number;
 
-    constructor() {
+    constructor(_buffer?: Buffer) {
         this.offset = 0;
         this.bytesToBacktrack = 0;
-        this.buffer = new Buffer(UhkBuffer.eepromSize);
-        this.buffer.fill(0);
+        if (_buffer && _buffer.length > UhkBuffer.eepromSize) {
+          throw `UhkBuffer.constructor: ` +
+            `Buffer provided is larger than the eeprom size ${UhkBuffer.eepromSize}`;
+        }
+        this.buffer = _buffer || new Buffer(UhkBuffer.eepromSize).fill(0);
     }
 
     readInt8(): number {

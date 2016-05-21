@@ -4,10 +4,7 @@ node_js:
 before_script:
     - npm install
 script:
-    - cd config-serializer
-    - tsc
-    - tslint -c ../tslint.json **/*.ts
-    - node test-serializer.js
+    - gulp test
 
 notifications:
     on_success: never

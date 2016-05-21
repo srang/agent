@@ -8,6 +8,10 @@ let assert = require('assert');
 let fs = require('fs');
 
 let uhkConfig = JSON.parse(fs.readFileSync('uhk-config.json'));
+let uhkConfig2 = new UhkBuffer(fs.readFileSync('uhk-config.bin'));
+let binConfigTs: Serializable<UhkConfiguration> = new UhkConfiguration().fromBinary(uhkConfig2);
+let binConfigJs = binConfigTs.toJsObject();
+fs.writeFileSync('uhk-config-deserialzed.json', JSON.stringify(binConfigJs, undefined, 4));
 
 let config1Js = uhkConfig;
 let config1Ts: Serializable<UhkConfiguration> = new UhkConfiguration().fromJsObject(config1Js);
@@ -30,6 +34,7 @@ fs.writeFileSync('uhk-config-serialized.bin', config2BufferContent);
 console.log('\n');
 try {
     assert.deepEqual(config1Js, config2Js);
+    assert.deepEqual(config1Js, binConfigJs);
     console.log('JSON configurations are identical.');
 } catch (error) {
     console.log('JSON configurations differ.');
