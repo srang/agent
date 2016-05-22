@@ -7,30 +7,37 @@ import {UhkConfiguration} from './config-items/UhkConfiguration';
 let assert = require('assert');
 let fs = require('fs');
 
-export function serializeJSON(config: string, output = 'uhk.bin') {
-  let jsonConfig = readJSON(config);
+export function readJSON(config: string): Serializable<UhkConfiguration> {
+  let jsonConfig = JSON.parse(fs.readFileSync(config));
   let configTs: Serializable<UhkConfiguration> = new UhkConfiguration().fromJsObject(jsonConfig);
-  let configBuffer = new UhkBuffer();
-  configTs.toBinary(configBuffer);
-  fs.writeFileSync(output, configBuffer.getBufferContent());
+  return configTs;
 }
 
-export function deserializeBin(config: string, output = 'uhk.json') {
-  let buffer: UhkBuffer = readBin(config);
+export function readBIN(config: string): Serializable<UhkConfiguration> {
+  let buffer: UhkBuffer = new UhkBuffer(fs.readFileSync(config));
   let configTs: Serializable<UhkConfiguration> = new UhkConfiguration().fromBinary(buffer);
+  return configTs;
+}
+
+export function writeJSON(configTs: Serializable<UhkConfiguration>, filename = 'uhk.json') {
   let configJs = configTs.toJsObject();
-  fs.writeFileSync(output, JSON.stringify(configJs, undefined, 4));
+  fs.writeFileSync(filename, JSON.stringify(configJs, undefined, 4));
+}
+
+export function writeBIN(configTs: Serializable<UhkConfiguration>, filename = 'uhk.bin') {
+  let configBuffer = new UhkBuffer();
+  configTs.toBinary(configBuffer);
+  fs.writeFileSync(filename, configBuffer.getBufferContent());
 }
 
 export function compareConfigs(binConfig: string, jsonConfig: string) {
-  let config1Js = readJSON(jsonConfig);
-  let config1Ts: Serializable<UhkConfiguration> = new UhkConfiguration().fromJsObject(config1Js);
+  let config1Ts: Serializable<UhkConfiguration> = readJSON(jsonConfig);
+  let config1Js = config1Ts.toJsObject();
   let buf = new UhkBuffer();
   config1Ts.toBinary(buf);
   let config1Bc = buf.getBufferContent();
 
-  buf = readBin(binConfig);
-  let config2Ts: Serializable<UhkConfiguration> = new UhkConfiguration().fromBinary(buf);
+  let config2Ts: Serializable<UhkConfiguration> = readBIN(binConfig);
   let config2Js = config2Ts.toJsObject();
   let config2Bc = buf.getBufferContent();
   try {
@@ -43,12 +50,4 @@ export function compareConfigs(binConfig: string, jsonConfig: string) {
   let buffersContentsAreEqual = Buffer.compare(config1Bc, config2Bc) === 0;
   console.log('Binary configurations ' + (buffersContentsAreEqual ? 'are identical' : 'differ') + '.');
   return buffersContentsAreEqual;
-}
-
-function readJSON(filename: string) {
-  return JSON.parse(fs.readFileSync(filename));
-}
-
-function readBin(filename: string) {
-  return new UhkBuffer(fs.readFileSync(filename));
 }

@@ -9,6 +9,6 @@
         "../node_modules",
         "../typings/main",
         "../typings/main.d.ts",
-        "../tests"
+        "../config-serializer"
     ]
 }

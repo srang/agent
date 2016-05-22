@@ -2,11 +2,11 @@
 
 module.exports = {
     entry: {
-        main: __dirname + '/test-serializer.ts'
+        main: __dirname + '/serializer.ts'
     },
     target: 'node',
     output: {
-        filename: "test-serializer.js"
+        filename: "serializer.js"
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
