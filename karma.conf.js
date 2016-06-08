@@ -2,6 +2,7 @@
 // Generated on Sat May 21 2016 13:38:56 GMT-0500 (CDT)
 
 module.exports = function(config) {
+  var webpackconfig = require('./webpack.config.js');
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -28,7 +29,14 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        // add webpack as preprocessor
+        'tests/*_test.js': ['webpack'],
+        'tests/**/*_test.js': ['webpack']
     },
+    webpack: webpackconfig,
+
+    // Webpack please don't spam the console when running in karma!
+    webpackServer: { noInfo: true },
 
 
     // test results reporter to use

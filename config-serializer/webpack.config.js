@@ -6,6 +6,7 @@ module.exports = {
     },
     target: 'node',
     output: {
+        path: __dirname + '/../build/',
         filename: "serializer.js"
     },
     resolve: {
@@ -22,9 +23,6 @@ module.exports = {
             { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/ }
         ]
     },
-    plugins: [
-        //   new webpack.optimize.UglifyJsPlugin({ minimize: true })
-    ],
     node: {
         fs: "empty"
     }

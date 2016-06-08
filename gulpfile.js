@@ -53,9 +53,9 @@ gulp.task('compile-serializer', function() {
   var compiled = serializer.src()
     .pipe(ts(serializer));
   compiled.js.pipe(gulp.dest('./config-serializer'));
-  return gulp.src('./config-serializer/serializer.js')
+  return gulp.src('./config-serializer/serializer.ts')
     .pipe(webpackStream(require('./config-serializer/webpack.config.js')))
-    .pipe(gulp.dest('config-serializer/builds/'));
+    .pipe(gulp.dest('build/'));
 });
 
 gulp.task('compile-tests', function() {

@@ -1,3 +1,4 @@
+/// <reference path="../typings/globals/jasmine/index.d.ts" />
 /// <reference path="../typings/main/ambient/node/index.d.ts" />
 
 import * as serial from '../config-serializer/serializer';
@@ -16,7 +17,6 @@ describe('Agent Serializer', function() {
   });
 
   it('deserializes BIN', function() {
-    serial.deserializeBin('./config-serializer/uhk-test.bin', './config-serializer/uhk-test.json');
     let config = serial.readBIN(binConfig);
     serial.writeJSON(config, jsTest);
     let result = serial.compareConfigs(binConfig, jsTest);
