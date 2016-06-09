@@ -4,3 +4,8 @@ typings
 build
 bundle
 css
+tests/npm-debug.log
+config-serializer/uhk-config-*.bin
+config-serializer/uhk-config-*.json
+config-serializer/uhk-test.*
+**/*.sw*
