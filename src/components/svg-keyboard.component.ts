@@ -1,9 +1,9 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 import {Module} from '../../config-serializer/config-items/Module';
 import {SvgModule} from './svg-module.model';
 import {SvgModuleComponent} from './svg-module.component';
-import {PopoverComponent} from './popover/popover.component';
+import {DataProviderService} from '../services/data-provider.service';
 
 @Component({
     selector: 'svg-keyboard',
@@ -20,7 +20,6 @@ import {PopoverComponent} from './popover/popover.component';
                 />
             </svg:g>
         </svg>
-        <popover *ngIf="popoverEnabled" (cancel)="hidePopover()"></popover>
     `,
     styles:
     [`
@@ -31,31 +30,29 @@ import {PopoverComponent} from './popover/popover.component';
             position: relative;
         }
     `],
-    directives: [SvgModuleComponent, PopoverComponent]
+    directives: [SvgModuleComponent]
 })
 export class SvgKeyboardComponent implements OnInit {
-    @Input() svgAttributes: { viewBox: string, transform: string, fill: string };
-    @Input() modules: SvgModule[];
     @Input() moduleConfig: Module[];
+    @Output() keyClick = new EventEmitter();
 
-    private popoverEnabled: boolean;
+    private modules: SvgModule[];
+    private svgAttributes: { viewBox: string, transform: string, fill: string };
 
-    constructor() {
+    constructor(private dps: DataProviderService) {
         this.modules = [];
+        this.svgAttributes = this.dps.getKeyboardSvgAttributes();
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.modules = this.dps.getSvgModules();
+    }
 
     onEditKeyActionRequest(moduleId: number, keyId: number): void {
-        this.showPopover();
-    }
-
-    showPopover(): void {
-        this.popoverEnabled = true;
-    }
-
-    hidePopover(): void {
-        this.popoverEnabled = false;
+        this.keyClick.emit({
+            moduleId,
+            keyId
+        });
     }
 
 }

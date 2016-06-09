@@ -1,5 +1,3 @@
-/// <reference path="../typings/main/ambient/node/index.d.ts" />
-
 import {Serializable} from './Serializable';
 import {UhkBuffer} from './UhkBuffer';
 import {UhkConfiguration} from './config-items/UhkConfiguration';

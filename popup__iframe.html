@@ -85,7 +85,7 @@
               {{#each scancode}}
                 <optgroup label="{{groupName}}">
                   {{#each groupValues}}
-                    <option value="{{value}}" data-explanation="{{dataExplanation}}">{{label}}</option>
+                    <option value="{{scancode}}" data-searchterm="{{searchTerm}}">{{label}}</option>
                   {{/each}}
                 </optgroup>
               {{/each}}
@@ -130,7 +130,15 @@
             <b class="setting-label" style="position:relative;">Long press action:</b>
             <select class="secondary-role" style="width:135px">
               {{#each secondaryRole}}
-                <option value="{{name}}">{{name}}</option>
+                {{#if groupName}}
+                  <optgroup label="{{groupName}}">
+                {{/if}}
+                {{#each groupValues}}
+                  <option value="{{value}}">{{label}}</option>
+                {{/each}}
+                {{#if groupName}}
+                  </optgroup>
+                {{/if}}
               {{/each}}
             </select>
             <i class="fa fa-question-circle" style="margin-left:5px" data-toggle="tooltip" data-placement="right" title="This action happens when the key is being held along with another key."></i>
@@ -213,6 +221,10 @@
         </div>
       </div>
       <div style="display: none;" class="mouse__config mouse__config--speed text-center">
+        <div class="help-text--mouse-speed text-left">
+          <p>Press this key along with mouse movement/scrolling to accelerate/decelerate the speed of the action.</p>
+          <p>You can set the multiplier in <a href="#" title="link to the setting">link to setting</a>.</p>
+        </div>
         <div class="btn-group btn-group-lg" role="group">
           <button type="button" class="btn btn-default">-</button>
           <button type="button" class="btn btn-default">+</button>
