@@ -7,6 +7,11 @@ import {UhkConfiguration} from './config-items/UhkConfiguration';
 let assert = require('assert');
 let fs = require('fs');
 
+export function parseJSON(config: any): Serializable<UhkConfiguration> {
+  let configTs: Serializable<UhkConfiguration> = new UhkConfiguration().fromJsObject(config);
+  return configTs;
+}
+
 export function readJSON(config: string): Serializable<UhkConfiguration> {
   let jsonConfig = JSON.parse(fs.readFileSync(config));
   let configTs: Serializable<UhkConfiguration> = new UhkConfiguration().fromJsObject(jsonConfig);

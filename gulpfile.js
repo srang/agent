@@ -7,6 +7,9 @@ var sourcemaps = require('gulp-sourcemaps');
 var webpackStream = require('webpack-stream');
 var tslint = require('gulp-tslint');
 var ts = require('gulp-typescript');
+var rimraf = require('gulp-rimraf');
+var ignore = require('gulp-ignore');
+var typings = require('gulp-typings')
 var testServer = require('karma').Server;
 
 var serializer = ts.createProject('config-serializer/tsconfig.json');
@@ -45,28 +48,66 @@ gulp.task('webpack', function () {
     .pipe(gulp.dest('build/'));
 });
 
-gulp.task('compile-serializer', function() {
-  gulp.src('./config-serializer/**/*.ts')
+gulp.task('typings', function() {
+  return gulp.src('./typings.json')
+    .pipe(typings());
+});
+
+gulp.task('clean-serializer', function() {
+  return gulp.src(['./config-serializer/**/*.js',
+      './build/serializer.js',
+      '!./config-serializer/webpack.config.js'])
+    .pipe(rimraf());
+});
+
+gulp.task('lint-serializer', function() {
+  return gulp.src('./config-serializer/**/*.ts')
     .pipe(tslint())
     .pipe(tslint.report('verbose'));
+});
 
-  var compiled = serializer.src()
-    .pipe(ts(serializer));
-  compiled.js.pipe(gulp.dest('./config-serializer'));
+gulp.task('build-serializer', ['clean-serializer'], function() {
+  return serializer.src()
+    .pipe(ts(serializer))
+    .pipe(gulp.dest('./config-serializer'));
+});
+
+gulp.task('webpack-serializer', ['build-serializer'], function() {
   return gulp.src('./config-serializer/serializer.ts')
     .pipe(webpackStream(require('./config-serializer/webpack.config.js')))
     .pipe(gulp.dest('build/'));
 });
 
-gulp.task('compile-tests', function() {
-  gulp.src('./tests/**/*.ts')
+gulp.task('compile-serializer', ['clean-serializer', 'lint-serializer',
+    'build-serializer', 'webpack-serializer']);
+
+gulp.task('clean-tests', function() {
+  return gulp.src(['./tests/**/*.js',
+      './build/tests.js',
+      '!./tests/webpack.config.js'])
+    .pipe(rimraf());
+});
+
+gulp.task('lint-tests', function() {
+  return gulp.src('./tests/**/*.ts')
     .pipe(tslint())
     .pipe(tslint.report('verbose'));
-
-  var compiled = tests.src()
-    .pipe(ts(tests));
-  return compiled.js.pipe(gulp.dest('./tests'));
 });
+
+gulp.task('build-tests', ['clean-tests'], function() {
+  return tests.src()
+    .pipe(ts(tests))
+    .pipe(gulp.dest('./tests'));
+});
+
+gulp.task('webpack-tests', ['build-tests'], function() {
+  return gulp.src('./tests/**.ts')
+    .pipe(webpackStream(require('./tests/webpack.config.js')))
+    .pipe(gulp.dest('build/'));
+});
+
+gulp.task('compile-tests', ['clean-tests',
+    'build-tests', 'webpack-tests']);
 
 gulp.task('test', ['compile-serializer', 'compile-tests'], function() {
   return new testServer({

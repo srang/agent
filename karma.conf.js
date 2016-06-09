@@ -2,7 +2,7 @@
 // Generated on Sat May 21 2016 13:38:56 GMT-0500 (CDT)
 
 module.exports = function(config) {
-  var webpackconfig = require('./webpack.config.js');
+  //var webpackconfig = require('./build/webpack.config.js');
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -16,13 +16,15 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'config-serializer/**/*.js',
-      'tests/**/*.js'
+      'build/**/*.js'
     ],
 
 
     // list of files to exclude
     exclude: [
+      'build/uhk.js',
+      'build/uhk.js.map',
+      'build/webpack.config.js'
     ],
 
 
@@ -30,10 +32,28 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
         // add webpack as preprocessor
-        'tests/*_test.js': ['webpack'],
-        'tests/**/*_test.js': ['webpack']
+        'build/serializer.js': ['webpack'],
+        'build/tests.js': ['webpack']
+        //'config-serializer/**/*.js': ['webpack'],
+        //'tests/**/*.js': ['webpack']
     },
-    webpack: webpackconfig,
+    webpack: {
+      resolve: {
+          extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
+          alias: { },
+          modulesDirectories: [
+              './node_modules'
+          ]
+      },
+      module: {
+          loaders: [
+              { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/ }
+          ]
+      },
+      node: {
+          fs: "empty"
+      }
+    },
 
     // Webpack please don't spam the console when running in karma!
     webpackServer: { noInfo: true },
